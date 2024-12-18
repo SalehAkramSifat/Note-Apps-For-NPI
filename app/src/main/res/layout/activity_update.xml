@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:id="@+id/updateNote"
+    tools:context=".UpdateActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/toolbar_background"
+        android:elevation="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:title="Edit Note"
+        app:titleTextColor="@android:color/white" >
+        <ImageView
+            android:id="@+id/updatedone"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="end"
+            android:background="@drawable/done_bac"
+            android:src="@drawable/baseline_done_24"
+            android:contentDescription="Done Button" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_below="@id/toolbar"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="@color/card_background">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp">
+
+            <EditText
+                android:id="@+id/updatetitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Note Title"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:background="@drawable/main_bac"
+                android:padding="12dp"
+                android:textColor="@color/input_text_color"
+                android:textColorHint="@color/hint_text_color" />
+
+            <EditText
+                android:id="@+id/updateContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/updatetitle"
+                android:layout_marginTop="12dp"
+                android:hint="Write your note here..."
+                android:gravity="start|top"
+                android:padding="12dp"
+                android:background="@drawable/main_bac"
+                android:textColor="@color/input_text_color"
+                android:textColorHint="@color/hint_text_color"
+                android:inputType="textMultiLine" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
