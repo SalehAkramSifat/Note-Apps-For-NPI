@@ -40,11 +40,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
         //Navigation Start
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
@@ -106,7 +101,6 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_about -> {
-                // Handle help action
                 true
             }
             R.id.action_exit -> {
@@ -127,18 +121,17 @@ class MainActivity : AppCompatActivity() {
         notesAdapter.refreshData(db.getAllnotes())
     }
     private fun showExitDialog() {
-        val builder = AlertDialog.Builder(this) // 'this' should be the Activity context
+        val builder = AlertDialog.Builder(this)
         builder.setTitle("Exit")
             .setMessage("Are you sure you want to exit?")
-            .setCancelable(false) // Dialog can't be dismissed by tapping outside
+            .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
-                finish() // Close the app
+                finish()
             }
             .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss() // Close the dialog without exiting the app
+                dialog.dismiss()
             }
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
     }
-
 }
