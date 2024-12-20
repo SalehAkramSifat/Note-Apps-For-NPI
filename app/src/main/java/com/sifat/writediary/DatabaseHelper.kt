@@ -1,5 +1,6 @@
 package com.sifat.writediary
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -116,6 +117,29 @@ class DatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,n
             return@withContext result
         }
     }
+
+    @SuppressLint("Range")
+    fun searchNotes(query: String): List<Note> {
+        val notesList = mutableListOf<Note>()
+        val db = readableDatabase
+        // Use the correct table name: TABLE_NAME instead of "notes"
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME WHERE title LIKE ? OR content LIKE ?", arrayOf("%$query%", "%$query%"))
+
+        if (cursor.moveToFirst()) {
+            do {
+                val note = Note(
+                    cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
+                    cursor.getString(cursor.getColumnIndex(COLUMN_TITLE)),
+                    cursor.getString(cursor.getColumnIndex(COLUMN_CONTENT))
+                )
+                notesList.add(note)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return notesList
+    }
+
 
 
 }

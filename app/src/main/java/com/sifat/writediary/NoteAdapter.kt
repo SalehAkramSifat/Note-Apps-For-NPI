@@ -89,6 +89,10 @@ class NoteAdapter(private var notes:MutableList<Note>, context: Context) : Recyc
             popupMenu.show()
         }
     }
+    fun updateData(notes: List<Note>) {
+        this.notes = notes.toMutableList()
+        notifyDataSetChanged()
+    }
 
     fun refreshData(newNotes: List<Note>) {
         notes = newNotes.toMutableList()

@@ -1,4 +1,3 @@
-
 package com.sifat.writediary
 
 import android.content.Intent
@@ -9,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +48,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Set up SearchView in the toolbar
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as androidx.appcompat.widget.SearchView
+
+        // Set query text listener
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    // Handle query text submit
+                    Toast.makeText(this@MainActivity, "Search submitted: $it", Toast.LENGTH_SHORT).show()
+                    return true
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    // Filter notes based on the search query
+                    val filteredNotes = db.searchNotes(it)
+                    notesAdapter.updateData(filteredNotes)  // Assuming you have an `updateData` method in your adapter
+                    return true
+                }
+                return false
+            }
+        })
+        return true
+    }
+
+
+    // Handle Navigation Drawer item selections
     private fun onNavigationItemSelected(item: MenuItem) {
         when (item.itemId) {
             R.id.action_home -> {
@@ -69,9 +101,7 @@ class MainActivity : AppCompatActivity() {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("About")
                     .setMessage("App Name: NoteApp\nDeveloper: Saleh Akram Sifat\nVersion: 1.0\nCopyright © Saleh Akram Sifat")
-                    .setPositiveButton("OK") { dialog, _ ->
-                        dialog.dismiss()
-                    }
+                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                 builder.create().show()
             }
             R.id.action_exit -> {
@@ -81,10 +111,7 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.closeDrawer(binding.navView)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return false
-    }
-
+    // Handle toolbar item selections
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -95,26 +122,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Refresh notes data when returning to the activity
     override fun onResume() {
         super.onResume()
         notesAdapter.refreshData(db.getAllnotes())
     }
 
+    // Show exit confirmation dialog
     private fun showExitDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Exit")
             .setMessage("Are you sure you want to exit?")
             .setCancelable(false)
-            .setPositiveButton("Yes") { _, _ ->
-                finish()
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
-            }
+            .setPositiveButton("Yes") { _, _ -> finish() }
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
     }
 
+    // Export all notes to a PDF file
     private fun exportAllNotesToPDF() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -124,27 +150,22 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CODE_CREATE_FILE)
     }
 
+    // Handle result of file creation intent
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CREATE_FILE && resultCode == RESULT_OK) {
-            data?.data?.let { uri ->
-                savePDFToFile(uri)
-            } ?: run {
-                Toast.makeText(this, "File creation cancelled", Toast.LENGTH_SHORT).show()
-            }
+            data?.data?.let { uri -> savePDFToFile(uri) }
+                ?: run { Toast.makeText(this, "File creation cancelled", Toast.LENGTH_SHORT).show() }
         }
     }
 
+    // Save the notes to a PDF file
     private fun savePDFToFile(uri: Uri) {
         val pdfDocument = PdfDocument()
-
-        // Title paint (bold and larger text)
         val titlePaint = Paint().apply {
             textSize = 18f
             typeface = Typeface.DEFAULT_BOLD
         }
-
-        // Content paint (regular text)
         val contentPaint = Paint().apply {
             textSize = 16f
             typeface = Typeface.DEFAULT
@@ -158,17 +179,15 @@ class MainActivity : AppCompatActivity() {
         var yPosition = 80f // Start position for the first page
         var pageNumber = 1
 
-        // Create the first page
         var pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), pageNumber).create()
         var page = pdfDocument.startPage(pageInfo)
         var canvas = page.canvas
 
-        val allNotes = db.getAllnotes() // Get all notes from the database
+        val allNotes = db.getAllnotes()
         for (note in allNotes) {
             val title = note.title
             val content = note.content
 
-            // Check if we need to move to the next page
             if (yPosition + 2 * lineSpacing > pageHeight - 40f) {
                 pdfDocument.finishPage(page)
                 pageNumber++
@@ -178,11 +197,9 @@ class MainActivity : AppCompatActivity() {
                 canvas = page.canvas
             }
 
-            // Draw title
             canvas.drawText(title, leftMargin, yPosition, titlePaint)
             yPosition += lineSpacing
 
-            // Draw content (split into multiple lines if necessary)
             val words = content.split(" ")
             val contentLineBuilder = StringBuilder()
             for (word in words) {
@@ -191,7 +208,6 @@ class MainActivity : AppCompatActivity() {
                     canvas.drawText(contentLineBuilder.toString(), leftMargin, yPosition, contentPaint)
                     yPosition += lineSpacing
 
-                    // Check for page overflow
                     if (yPosition > pageHeight - 40f) {
                         pdfDocument.finishPage(page)
                         pageNumber++
@@ -205,15 +221,14 @@ class MainActivity : AppCompatActivity() {
                 }
                 contentLineBuilder.append(word).append(" ")
             }
-            // Draw the remaining content line
+
             if (contentLineBuilder.isNotEmpty()) {
                 canvas.drawText(contentLineBuilder.toString(), leftMargin, yPosition, contentPaint)
                 yPosition += lineSpacing
             }
-            yPosition += lineSpacing // Add extra space after each note
+            yPosition += lineSpacing
         }
 
-        // Finish the last page
         pdfDocument.finishPage(page)
 
         try {
@@ -228,7 +243,6 @@ class MainActivity : AppCompatActivity() {
             pdfDocument.close()
         }
     }
-
 
     companion object {
         private const val REQUEST_CODE_CREATE_FILE = 1

@@ -1,32 +1,47 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_search"
+        android:title="Search"
+        android:icon="@drawable/baseline_search_24"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always" />
+
+
     <item
         android:id="@+id/action_home"
         android:title="Home"
-        android:icon="@drawable/baseline_home_24"/>
+        android:icon="@drawable/baseline_home_24"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_write"
         android:title="Write Note"
         android:icon="@drawable/baseline_edit_24"
-        android:orderInCategory="2"/>
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_settings"
         android:title="Settings"
         android:icon="@drawable/baseline_settings_24"
-        android:orderInCategory="4"/>
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_export"
         android:title="Export"
         android:icon="@drawable/baseline_arrow_circle_down_24"
-        android:orderInCategory="5"/>
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_about"
         android:title="About"
         android:icon="@drawable/baseline_info_24"
-        android:orderInCategory="7"/>
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_exit"
         android:title="Exit"
         android:icon="@drawable/baseline_logout_24"
-        android:orderInCategory="8"/>
+        app:showAsAction="never" />
+
 </menu>

@@ -22,25 +22,28 @@
             android:elevation="4dp"
             app:title="Write Diary"
             android:titleTextColor="#FFFFFF"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="10dp"
             android:clipToPadding="false"
+            android:padding="10dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_design"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintVertical_bias="0.0"
+            tools:listitem="@layout/item_design" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/addNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="60dp"
-            android:padding="30dp"
+            android:padding="3dp"
             android:elevation="6dp"
             app:icon="@drawable/writing"
             app:iconTint="#FFFFFF"
