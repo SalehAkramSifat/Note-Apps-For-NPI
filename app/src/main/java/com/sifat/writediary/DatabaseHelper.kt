@@ -5,6 +5,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.content.contentValuesOf
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,null,  DATABASE_VERSION) {
 
@@ -91,4 +93,29 @@ class DatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,n
         db.delete(TABLE_NAME, whereClause, whereArgs)
         db.close()
     }
+
+    suspend fun getLongText(): String {
+        return withContext(Dispatchers.IO) {
+            var result = ""
+            val db = this@DatabaseHelper.readableDatabase
+            try {
+                val query = "SELECT $COLUMN_CONTENT FROM $TABLE_NAME WHERE $COLUMN_ID = (SELECT MAX($COLUMN_ID) FROM $TABLE_NAME)"
+                db.rawQuery(query, null).use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        result = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CONTENT))
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()  // Log or handle exceptions
+            } finally {
+                // Ensure the database is closed after all operations are done
+                if (db.isOpen) {
+                    db.close()
+                }
+            }
+            return@withContext result
+        }
+    }
+
+
 }

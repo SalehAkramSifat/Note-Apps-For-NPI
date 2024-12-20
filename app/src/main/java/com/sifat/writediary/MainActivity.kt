@@ -1,3 +1,4 @@
+
 package com.sifat.writediary
 
 import android.content.Intent
@@ -136,42 +137,83 @@ class MainActivity : AppCompatActivity() {
 
     private fun savePDFToFile(uri: Uri) {
         val pdfDocument = PdfDocument()
+
+        // Title paint (bold and larger text)
         val titlePaint = Paint().apply {
-            textSize = 18f // টাইটেলের ফন্ট সাইজ
-            typeface = Typeface.DEFAULT_BOLD // Bold স্টাইল
+            textSize = 18f
+            typeface = Typeface.DEFAULT_BOLD
         }
 
+        // Content paint (regular text)
         val contentPaint = Paint().apply {
-            textSize = 16f // কন্টেন্টের ফন্ট সাইজ
-            typeface = Typeface.DEFAULT // Normal স্টাইল
+            textSize = 16f
+            typeface = Typeface.DEFAULT
         }
-        var yPosition = 100f
+
+        val leftMargin = 40f
+        val rightMargin = 40f
+        val lineSpacing = 30f
+        val pageHeight = 842f // A4 height in points
+        val pageWidth = 595f // A4 width in points
+        var yPosition = 80f // Start position for the first page
         var pageNumber = 1
 
-        var pageInfo = PdfDocument.PageInfo.Builder(595, 842, pageNumber).create()
+        // Create the first page
+        var pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), pageNumber).create()
         var page = pdfDocument.startPage(pageInfo)
         var canvas = page.canvas
 
-        val allNotes = db.getAllnotes() // ডাটাবেস থেকে সমস্ত নোট
-        for ((index, note) in allNotes.withIndex()) {
-            val title = note.title // নোটের শিরোনাম
-            val content = note.content // নোটের বিষয়বস্তু
+        val allNotes = db.getAllnotes() // Get all notes from the database
+        for (note in allNotes) {
+            val title = note.title
+            val content = note.content
 
-            if (yPosition > 800f) {
+            // Check if we need to move to the next page
+            if (yPosition + 2 * lineSpacing > pageHeight - 40f) {
                 pdfDocument.finishPage(page)
                 pageNumber++
-                yPosition = 100f
-
-                pageInfo = PdfDocument.PageInfo.Builder(595, 842, pageNumber).create()
+                yPosition = 80f
+                pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), pageNumber).create()
                 page = pdfDocument.startPage(pageInfo)
                 canvas = page.canvas
             }
 
-            canvas.drawText("$title", 80f, yPosition, titlePaint)
-            yPosition += 30f
-            canvas.drawText("$content", 80f, yPosition, contentPaint)
-            yPosition += 50f
+            // Draw title
+            canvas.drawText(title, leftMargin, yPosition, titlePaint)
+            yPosition += lineSpacing
+
+            // Draw content (split into multiple lines if necessary)
+            val words = content.split(" ")
+            val contentLineBuilder = StringBuilder()
+            for (word in words) {
+                val testLine = if (contentLineBuilder.isEmpty()) word else contentLineBuilder.toString() + " " + word
+                if (contentPaint.measureText(testLine) > pageWidth - leftMargin - rightMargin) {
+                    canvas.drawText(contentLineBuilder.toString(), leftMargin, yPosition, contentPaint)
+                    yPosition += lineSpacing
+
+                    // Check for page overflow
+                    if (yPosition > pageHeight - 40f) {
+                        pdfDocument.finishPage(page)
+                        pageNumber++
+                        yPosition = 80f
+                        pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), pageNumber).create()
+                        page = pdfDocument.startPage(pageInfo)
+                        canvas = page.canvas
+                    }
+
+                    contentLineBuilder.clear()
+                }
+                contentLineBuilder.append(word).append(" ")
+            }
+            // Draw the remaining content line
+            if (contentLineBuilder.isNotEmpty()) {
+                canvas.drawText(contentLineBuilder.toString(), leftMargin, yPosition, contentPaint)
+                yPosition += lineSpacing
+            }
+            yPosition += lineSpacing // Add extra space after each note
         }
+
+        // Finish the last page
         pdfDocument.finishPage(page)
 
         try {
@@ -186,7 +228,6 @@ class MainActivity : AppCompatActivity() {
             pdfDocument.close()
         }
     }
-
 
 
     companion object {

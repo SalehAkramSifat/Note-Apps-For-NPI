@@ -59,11 +59,17 @@
                 android:textColor="@color/input_text_color"
                 android:textColorHint="@color/hint_text_color" />
 
+            <ScrollView
+                android:id="@+id/scrollview"
+                android:layout_below="@id/title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
             <EditText
                 android:id="@+id/mainBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/title"
+                android:layout_below="@id/scrollview"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="0dp"
@@ -74,6 +80,7 @@
                 android:padding="12dp"
                 android:textColor="@color/input_text_color"
                 android:textColorHint="@color/hint_text_color" />
+            </ScrollView>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>
