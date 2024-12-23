@@ -12,4 +12,14 @@
     <color name="hint_text_color">#757575</color>
     <color name="title_text">#333333</color> <!-- Dark text for title -->
     <color name="content_text">#666666</color>
+
+        <color name="colorSecondary">#56C8A7</color>  <!-- Soft Teal -->
+        <color name="colorBackground">#F4F4F4</color>  <!-- Light Gray Background -->
+        <color name="colorAccent">#3F51B5</color> <!-- Blue -->
+        <color name="colorPrimary">#4CAF50</color> <!-- Green -->
+        <color name="colorError">#F44336</color> <!-- Red -->
+        <color name="backgroundStart">#1E88E5</color> <!-- Light Blue -->
+        <color name="backgroundEnd">#0D47A1</color> <!-- Dark Blue -->
+        <color name="editTextBorder">#B0BEC5</color> <!-- Light Gray -->
+
 </resources>
