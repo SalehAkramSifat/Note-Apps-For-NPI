@@ -23,15 +23,13 @@ class AddnoteActivity : AppCompatActivity() {
 
         db = DatabaseHelper(this)
 
-        // ডাটাবেস থেকে পুরোনো নোট লোড করে EditText-এ সেট করা
         lifecycleScope.launch {
             val longText = withContext(Dispatchers.IO) {
-                db.getLongText() // ডাটাবেস থেকে বড় টেক্সট আনার কাজ
+                db.getLongText()
             }
-            binding.mainBox.setText(longText) // EditText-এ সেট করা
+            binding.mainBox.setText(longText)
         }
 
-        // সেভ বাটনে ক্লিক করলে নোট সেভ হবে
         binding.done.setOnClickListener {
             val title = binding.title.text.toString()
             val content = binding.mainBox.text.toString()
@@ -39,7 +37,7 @@ class AddnoteActivity : AppCompatActivity() {
             val note = Note(0, title, content)
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    db.insertNote(note) // ডাটাবেসে নোট সেভ করা
+                    db.insertNote(note)
                 }
                 Toast.makeText(this@AddnoteActivity, "Saved", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@AddnoteActivity, MainActivity::class.java)
@@ -47,21 +45,19 @@ class AddnoteActivity : AppCompatActivity() {
             }
         }
 
-        // TextWatcher smooth scrolling বা বড় টেক্সটের performance উন্নত করার জন্য
         binding.mainBox.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                // Smooth scrolling বা অতিরিক্ত প্রসেসিং এড়াতে কাজ করতে চাইলে এখানে যুক্ত করুন
             }
         })
         lifecycleScope.launch {
             val longText = withContext(Dispatchers.IO) {
-                db.getLongText() // ডাটাবেস থেকে বড় টেক্সট আনার জন্য
+                db.getLongText()
             }
-            binding.mainBox.setText(longText) // EditText-এ সেট করা
+            binding.mainBox.setText(longText)
         }
 
     }

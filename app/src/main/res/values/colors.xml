@@ -21,5 +21,6 @@
         <color name="backgroundStart">#1E88E5</color> <!-- Light Blue -->
         <color name="backgroundEnd">#0D47A1</color> <!-- Dark Blue -->
         <color name="editTextBorder">#B0BEC5</color> <!-- Light Gray -->
+    <color name="header_background">#6200EE</color>
 
 </resources>

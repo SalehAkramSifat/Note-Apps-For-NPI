@@ -107,9 +107,8 @@ class DatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,n
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()  // Log or handle exceptions
+                e.printStackTrace()
             } finally {
-                // Ensure the database is closed after all operations are done
                 if (db.isOpen) {
                     db.close()
                 }
@@ -122,7 +121,6 @@ class DatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,n
     fun searchNotes(query: String): List<Note> {
         val notesList = mutableListOf<Note>()
         val db = readableDatabase
-        // Use the correct table name: TABLE_NAME instead of "notes"
         val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME WHERE title LIKE ? OR content LIKE ?", arrayOf("%$query%", "%$query%"))
 
         if (cursor.moveToFirst()) {
@@ -139,7 +137,4 @@ class DatabaseHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME,n
         db.close()
         return notesList
     }
-
-
-
 }

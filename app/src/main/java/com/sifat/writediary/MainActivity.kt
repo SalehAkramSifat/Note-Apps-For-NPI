@@ -48,17 +48,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Set up SearchView in the toolbar
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as androidx.appcompat.widget.SearchView
 
-        // Set query text listener
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    // Handle query text submit
                     Toast.makeText(this@MainActivity, "Search submitted: $it", Toast.LENGTH_SHORT).show()
                     return true
                 }
@@ -67,9 +64,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    // Filter notes based on the search query
                     val filteredNotes = db.searchNotes(it)
-                    notesAdapter.updateData(filteredNotes)  // Assuming you have an `updateData` method in your adapter
+                    notesAdapter.updateData(filteredNotes)
                     return true
                 }
                 return false
@@ -79,7 +75,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    // Handle Navigation Drawer item selections
     private fun onNavigationItemSelected(item: MenuItem) {
         when (item.itemId) {
             R.id.action_home -> {
@@ -111,7 +106,6 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.closeDrawer(binding.navView)
     }
 
-    // Handle toolbar item selections
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -122,13 +116,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Refresh notes data when returning to the activity
     override fun onResume() {
         super.onResume()
         notesAdapter.refreshData(db.getAllnotes())
     }
 
-    // Show exit confirmation dialog
     private fun showExitDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Exit")
@@ -140,7 +132,6 @@ class MainActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    // Export all notes to a PDF file
     private fun exportAllNotesToPDF() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -150,7 +141,6 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CODE_CREATE_FILE)
     }
 
-    // Handle result of file creation intent
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CREATE_FILE && resultCode == RESULT_OK) {
@@ -159,7 +149,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Save the notes to a PDF file
     private fun savePDFToFile(uri: Uri) {
         val pdfDocument = PdfDocument()
         val titlePaint = Paint().apply {
@@ -174,9 +163,9 @@ class MainActivity : AppCompatActivity() {
         val leftMargin = 40f
         val rightMargin = 40f
         val lineSpacing = 30f
-        val pageHeight = 842f // A4 height in points
-        val pageWidth = 595f // A4 width in points
-        var yPosition = 80f // Start position for the first page
+        val pageHeight = 842f
+        val pageWidth = 595f
+        var yPosition = 80f
         var pageNumber = 1
 
         var pageInfo = PdfDocument.PageInfo.Builder(pageWidth.toInt(), pageHeight.toInt(), pageNumber).create()
