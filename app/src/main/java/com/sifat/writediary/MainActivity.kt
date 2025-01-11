@@ -87,7 +87,8 @@ class MainActivity : AppCompatActivity() {
                 startActivity(writeIntent)
             }
             R.id.action_settings -> {
-                Toast.makeText(this, "Set", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
             }
             R.id.action_export -> {
                 exportAllNotesToPDF()
